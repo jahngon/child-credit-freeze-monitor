@@ -1,0 +1,211 @@
+{
+  "lastChecked": "2026-05-19T23:19:37.778Z",
+  "lastChanged": "2026-05-19T23:19:37.778Z",
+  "bureaus": [
+    {
+      "bureau": "equifax",
+      "sourceUrl": "https://assets.equifax.com/assets/personal/Minor_Freeze_Request_Form.pdf",
+      "documents": [
+        {
+          "id": "birth_child",
+          "label": "The minor's birth certificate"
+        },
+        {
+          "id": "birth_parent",
+          "label": "A copy of your birth certificate"
+        },
+        {
+          "id": "court",
+          "label": "A court order"
+        },
+        {
+          "id": "foster",
+          "label": "Foster care certification"
+        },
+        {
+          "id": "id_parent",
+          "label": "A copy of your driver's license or other government-issued identification"
+        },
+        {
+          "id": "poa",
+          "label": "A lawfully executed and valid power of attorney"
+        },
+        {
+          "id": "ssn_child",
+          "label": "A copy of the minor's Social Security card"
+        },
+        {
+          "id": "ssn_parent",
+          "label": "A copy of your Social Security card"
+        }
+      ],
+      "categories": {
+        "authority": {
+          "logic": "or",
+          "options": [
+            "birth_child",
+            "court",
+            "foster",
+            "poa"
+          ],
+          "notes": "Listed under 'To show you are the minor's parent or authorized representative' as OR options — any one is sufficient."
+        },
+        "parentId": {
+          "logic": "or",
+          "options": [
+            "birth_parent",
+            "id_parent",
+            "ssn_parent"
+          ],
+          "notes": "Listed under 'For proof of your identity' with 'provide one from each category' — the bullets within this sub-category are OR options."
+        },
+        "address": {
+          "logic": "na",
+          "options": [],
+          "notes": "The form does not list a separate address-proof document category. The guardian's current address is collected on the form itself."
+        },
+        "childId": {
+          "logic": "and",
+          "options": [
+            "birth_child",
+            "ssn_child"
+          ],
+          "notes": "The form explicitly states 'please provide both of the following' for the minor's documents, requiring both the minor's Social Security card AND birth certificate."
+        }
+      }
+    },
+    {
+      "bureau": "experian",
+      "sourceUrl": "https://www.experian.com/help/minor-request.html",
+      "documents": [
+        {
+          "id": "birth_child",
+          "label": "Child's birth certificate"
+        },
+        {
+          "id": "court",
+          "label": "Proof of guardianship, if not named on child's birth certificate"
+        },
+        {
+          "id": "id_parent",
+          "label": "Driver's license or another government issued identification card (e.g. state ID card)"
+        },
+        {
+          "id": "ssn_child",
+          "label": "Child's Social Security card"
+        },
+        {
+          "id": "utility",
+          "label": "Proof of address (bank statement, utility bill, or insurance statement)"
+        }
+      ],
+      "categories": {
+        "authority": {
+          "logic": "or",
+          "options": [
+            "birth_child",
+            "court"
+          ],
+          "notes": "The child's birth certificate satisfies authority if the parent is named on it. If the parent is not named on the birth certificate, proof of guardianship (court order) is required instead. These are mutually exclusive alternatives, not both required simultaneously."
+        },
+        "parentId": {
+          "logic": "or",
+          "options": [
+            "id_parent"
+          ]
+        },
+        "address": {
+          "logic": "or",
+          "options": [
+            "utility"
+          ]
+        },
+        "childId": {
+          "logic": "and",
+          "options": [
+            "birth_child",
+            "ssn_child"
+          ],
+          "notes": "The page explicitly lists both 'a copy of your child's birth certificate' and 'a copy of your child's Social Security card' as separate required items under 'all of the following', making both mandatory for child identity verification."
+        }
+      }
+    },
+    {
+      "bureau": "transunion",
+      "sourceUrl": "https://www.transunion.com/credit-freeze/credit-freeze-faq",
+      "documents": [
+        {
+          "id": "birth_child",
+          "label": "A document issued by a Federal, State, or local government agency showing proof of parentage, including a birth certificate"
+        },
+        {
+          "id": "birth_parent",
+          "label": "Certified or official copy of a birth certificate issued by the entity authorized to issue the birth certificate (parent)"
+        },
+        {
+          "id": "court",
+          "label": "An order issued by a court of law"
+        },
+        {
+          "id": "foster",
+          "label": "Written communication from a county welfare/probation department certifying the protected consumer is in a foster care setting"
+        },
+        {
+          "id": "id_child",
+          "label": "Copy of a driver's license, identification card issued by the motor vehicle administration, or any other government issued identification (child)"
+        },
+        {
+          "id": "id_parent",
+          "label": "Copy of a driver's license, identification card issued by the motor vehicle administration, or any other government issued identification (parent)"
+        },
+        {
+          "id": "poa",
+          "label": "A lawfully executed and valid power of attorney"
+        },
+        {
+          "id": "ssn_child",
+          "label": "Social Security number or a copy of a Social Security card (child)"
+        },
+        {
+          "id": "ssn_parent",
+          "label": "Social Security number or a copy of a Social Security card (parent)"
+        }
+      ],
+      "categories": {
+        "authority": {
+          "logic": "or",
+          "options": [
+            "birth_child",
+            "court",
+            "foster",
+            "poa"
+          ],
+          "notes": "Page says 'one piece of documentation' proving sufficient proof of authority. Any one of these four options is sufficient."
+        },
+        "parentId": {
+          "logic": "or",
+          "options": [
+            "birth_parent",
+            "id_parent",
+            "ssn_parent"
+          ],
+          "notes": "Page groups parent and child identity documents together under a single 'sufficient proof of identification' requirement (step 3), listing these as examples. Any one is sufficient for the parent."
+        },
+        "address": {
+          "logic": "na",
+          "options": [],
+          "notes": "The protected consumer freeze section does not mention any address proof requirement. Address documents are only mentioned as optional aids for locating a record in the general (self) freeze section."
+        },
+        "childId": {
+          "logic": "or",
+          "options": [
+            "birth_child",
+            "id_child",
+            "ssn_child"
+          ],
+          "notes": "Page groups parent and child identity documents together under step 3. The same document types apply to both parent and child identity. birth_child also appears under authority; it is the same physical document. Any one is sufficient for the child."
+        }
+      }
+    }
+  ]
+}
