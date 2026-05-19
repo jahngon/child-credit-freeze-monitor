@@ -5,7 +5,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"check": "tsx --env-file=.env src/index.ts",
+		"check": "tsx --env-file-if-exists=.env src/index.ts",
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},

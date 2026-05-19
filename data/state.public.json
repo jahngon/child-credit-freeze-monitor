@@ -1,6 +1,6 @@
 {
-  "lastChecked": "2026-05-19T23:19:37.778Z",
-  "lastChanged": "2026-05-19T23:19:37.778Z",
+  "lastChecked": "2026-05-19T23:37:28.097Z",
+  "lastChanged": "2026-05-19T23:37:28.097Z",
   "bureaus": [
     {
       "bureau": "equifax",
@@ -48,7 +48,7 @@
             "foster",
             "poa"
           ],
-          "notes": "Listed under 'To show you are the minor's parent or authorized representative' as OR options — any one is sufficient."
+          "notes": "Listed under 'To show you are the minor's parent or authorized representative'. Any one of these is sufficient."
         },
         "parentId": {
           "logic": "or",
@@ -62,7 +62,7 @@
         "address": {
           "logic": "na",
           "options": [],
-          "notes": "The form does not list a separate address-proof document category. The guardian's current address is collected on the form itself."
+          "notes": "No separate proof-of-address document is listed. The form collects the guardian's current address as a field but does not require a supporting document."
         },
         "childId": {
           "logic": "and",
@@ -70,7 +70,7 @@
             "birth_child",
             "ssn_child"
           ],
-          "notes": "The form explicitly states 'please provide both of the following' for the minor's documents, requiring both the minor's Social Security card AND birth certificate."
+          "notes": "The form explicitly says 'For the minor, please provide BOTH of the following', requiring both the minor's Social Security card and birth certificate."
         }
       }
     },
@@ -106,7 +106,7 @@
             "birth_child",
             "court"
           ],
-          "notes": "The child's birth certificate satisfies authority if the parent is named on it. If the parent is not named on the birth certificate, proof of guardianship (court order) is required instead. These are mutually exclusive alternatives, not both required simultaneously."
+          "notes": "The child's birth certificate satisfies authority if the parent is named on it. A separate proof of guardianship is required only if the parent is NOT named on the birth certificate — so these two are conditional alternatives, not both required simultaneously. Modeled as 'or' since one of the two will always suffice."
         },
         "parentId": {
           "logic": "or",
@@ -126,7 +126,7 @@
             "birth_child",
             "ssn_child"
           ],
-          "notes": "The page explicitly lists both 'a copy of your child's birth certificate' and 'a copy of your child's Social Security card' as separate required items under 'all of the following', making both mandatory for child identity verification."
+          "notes": "The page explicitly lists both 'a copy of your child's birth certificate' and 'a copy of your child's Social Security card' as separate required items in the 'all of the following' list, making both required for child identity verification."
         }
       }
     },
@@ -148,15 +148,15 @@
         },
         {
           "id": "foster",
-          "label": "Written communication from a county welfare/probation department certifying the protected consumer is in a foster care setting"
+          "label": "Written communication from a county welfare/probation department certifying foster care placement"
         },
         {
           "id": "id_child",
-          "label": "Copy of a driver's license, identification card issued by the motor vehicle administration, or any other government issued identification (child)"
+          "label": "Copy of a driver's license, motor vehicle administration ID, or any other government-issued identification (child)"
         },
         {
           "id": "id_parent",
-          "label": "Copy of a driver's license, identification card issued by the motor vehicle administration, or any other government issued identification (parent)"
+          "label": "Copy of a driver's license, motor vehicle administration ID, or any other government-issued identification (parent)"
         },
         {
           "id": "poa",
@@ -180,7 +180,7 @@
             "foster",
             "poa"
           ],
-          "notes": "Page says 'one piece of documentation' proving sufficient proof of authority. Any one of these four options is sufficient."
+          "notes": "Page requires one piece of documentation proving sufficient proof of authority. The birth certificate listed here is the same document as birth_child, which also satisfies childId."
         },
         "parentId": {
           "logic": "or",
@@ -189,12 +189,12 @@
             "id_parent",
             "ssn_parent"
           ],
-          "notes": "Page groups parent and child identity documents together under a single 'sufficient proof of identification' requirement (step 3), listing these as examples. Any one is sufficient for the parent."
+          "notes": "Page requires 'sufficient proof of identification' for the parent/guardian. Any one of these satisfies the requirement."
         },
         "address": {
           "logic": "na",
           "options": [],
-          "notes": "The protected consumer freeze section does not mention any address proof requirement. Address documents are only mentioned as optional aids for locating a record in the general (self) freeze section."
+          "notes": "The page does not require a separate proof of address document for the protected consumer (minor) freeze request. Address proof is only mentioned as optional for a standard adult freeze by mail."
         },
         "childId": {
           "logic": "or",
@@ -203,7 +203,7 @@
             "id_child",
             "ssn_child"
           ],
-          "notes": "Page groups parent and child identity documents together under step 3. The same document types apply to both parent and child identity. birth_child also appears under authority; it is the same physical document. Any one is sufficient for the child."
+          "notes": "Page requires 'sufficient proof of identification' for the minor/dependent. Any one of these satisfies the requirement. birth_child is the same document listed under authority."
         }
       }
     }
