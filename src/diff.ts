@@ -175,16 +175,16 @@ function diffMailingAddress(
 	prior: BureauData['mailingAddress'],
 	current: BureauData['mailingAddress']
 ): MailingAddressChange | null {
+	// Address lines are the bureau-sourced data; notes are LLM commentary about
+	// the lines. Notes drift on every extraction even when the bureau hasn't
+	// changed anything, so we ignore notes-only deltas entirely.
 	const priorLines = prior.lines.map((l) => l.trim());
 	const currentLines = current.lines.map((l) => l.trim());
 	const linesDiffer =
 		priorLines.length !== currentLines.length ||
 		priorLines.some((l, i) => l !== currentLines[i]);
-	const priorNotes = (prior.notes ?? '').trim();
-	const currentNotes = (current.notes ?? '').trim();
-	const notesDiffer = priorNotes !== currentNotes;
 
-	if (!linesDiffer && !notesDiffer) return null;
+	if (!linesDiffer) return null;
 
 	return {
 		from: { lines: prior.lines, ...(prior.notes !== undefined ? { notes: prior.notes } : {}) },
@@ -192,7 +192,7 @@ function diffMailingAddress(
 			lines: current.lines,
 			...(current.notes !== undefined ? { notes: current.notes } : {}),
 		},
-		linesChanged: linesDiffer,
+		linesChanged: true,
 	};
 }
 
@@ -223,11 +223,13 @@ function diffCategory(prior: CategoryData, current: CategoryData): CategoryChang
 	change.optionsAdded.sort();
 	change.optionsRemoved.sort();
 
+	// Notes are LLM commentary, not bureau-sourced data. Capture the delta for
+	// context if something else in this category also changed, but never let a
+	// notes-only diff mark the category dirty.
 	const priorNotes = prior.notes ?? null;
 	const currentNotes = current.notes ?? null;
-	if (priorNotes !== currentNotes) {
+	if (priorNotes !== currentNotes && dirty) {
 		change.notesChange = { from: priorNotes, to: currentNotes };
-		dirty = true;
 	}
 
 	return dirty ? change : null;

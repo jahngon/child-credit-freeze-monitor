@@ -142,12 +142,21 @@ describe('computeDiff', () => {
 		expect(diff.bureauChanges[0].documentsChanged[0].labelChange).toBeDefined();
 	});
 
-	it('detects a notes field change', () => {
+	it('ignores a notes-only category change (LLM commentary, not bureau data)', () => {
 		const current = clone(baseState);
 		current.bureaus[0].categories.address.notes = 'Updated note';
 		const diff = computeDiff(baseState, current);
+		expect(diff.hasChanges).toBe(false);
+	});
+
+	it('includes notesChange in the diff when accompanied by a real change', () => {
+		const current = clone(baseState);
+		current.bureaus[0].categories.childId.logic = 'or';
+		current.bureaus[0].categories.childId.notes = 'Updated note';
+		const diff = computeDiff(baseState, current);
 		expect(diff.hasChanges).toBe(true);
-		expect(diff.bureauChanges[0].categoryChanges.address?.notesChange).toBeDefined();
+		expect(diff.bureauChanges[0].categoryChanges.childId?.logicChange).toBeDefined();
+		expect(diff.bureauChanges[0].categoryChanges.childId?.notesChange).toBeDefined();
 	});
 
 	it('detects a mailing address change and sets hasAddressChanges', () => {
@@ -172,15 +181,12 @@ describe('computeDiff', () => {
 		expect(diff.hasAddressChanges).toBe(false);
 	});
 
-	it('detects an address-notes-only change but does NOT flag it high-priority', () => {
+	it('ignores an address-notes-only change (LLM commentary, not bureau data)', () => {
 		const current = clone(baseState);
 		current.bureaus[0].mailingAddress.notes = 'Updated note';
 		const diff = computeDiff(baseState, current);
-		expect(diff.hasChanges).toBe(true);
-		// Notes-only address changes show in the diff, but they shouldn't trigger
-		// the high-priority address alert — that's reserved for real line changes.
+		expect(diff.hasChanges).toBe(false);
 		expect(diff.hasAddressChanges).toBe(false);
-		expect(diff.bureauChanges[0].mailingAddressChange?.linesChanged).toBe(false);
 	});
 
 	it('detects a sourceUrl change', () => {
