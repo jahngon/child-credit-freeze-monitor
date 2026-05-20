@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { z } from 'zod';
-import { BureauRequirements } from './schema.js';
+import { ExtractedBureauRequirements } from './schema.js';
 import type { BureauConfig } from './bureaus.js';
 
 const MODEL = 'claude-sonnet-4-6';
@@ -53,6 +53,17 @@ Known stable document IDs — use these whenever a listed document maps to one o
 - court: court order or legal guardianship document
 - poa: power of attorney
 - foster: foster care placement document
+
+You also extract the bureau's mailing address — the postal address where the parent sends their request. This is on the source page (or on the form, for Equifax's PDF). It is the SINGLE highest-stakes piece of data we ship to parents: a wrong address means a parent's request goes nowhere. Extract it carefully, exactly as it appears on the page, as a list of address lines:
+- Line 1: organization / department name (e.g. "Equifax Information Services LLC", "Experian Security Freeze", "TransUnion Protected Consumer Freeze")
+- Line 2+: street or PO Box
+- Last line: city, state, ZIP
+
+CRITICAL — disambiguating which address to pick:
+- The address you extract must be for the **Protected Consumer Freeze** (also called "minor freeze" or "freeze for a minor child"). This is the freeze a parent places on their under-16 child's credit.
+- Bureau pages frequently list MULTIPLE mailing addresses for different freeze types — standard adult freeze, fraud alert, dispute, etc. Do NOT pick those. The protected-consumer / minor freeze address is the only correct one for this tool.
+- If the page provides content from a separate "address-source page" appended at the bottom (delimited by "--- ADDRESS-SOURCE PAGE ---"), prefer the address from that page since it's the dedicated source.
+- If two addresses both seem to apply, pick the one explicitly labeled for "protected consumer" / "minor" / "child" and add a notes field explaining the disambiguation.
 
 Rules:
 1. Do not invent requirements not explicitly stated on the page.
@@ -116,8 +127,26 @@ const TOOL: Anthropic.Tool = {
 				},
 				required: ['authority', 'parentId', 'address', 'childId'],
 			},
+			mailingAddress: {
+				type: 'object',
+				description:
+					"The postal address where the parent mails their request. Extract exactly as printed; the first line is typically the organization/department name and the last line is City, State ZIP.",
+				properties: {
+					lines: {
+						type: 'array',
+						items: { type: 'string' },
+						description:
+							'Address as a list of lines. Example: ["Equifax Information Services LLC", "P.O. Box 105788", "Atlanta, GA 30348-5788"]',
+					},
+					notes: {
+						type: 'string',
+						description: 'Optional note about ambiguity (e.g. multiple addresses on the page).',
+					},
+				},
+				required: ['lines'],
+			},
 		},
-		required: ['bureau', 'sourceUrl', 'documents', 'categories'],
+		required: ['bureau', 'sourceUrl', 'documents', 'categories', 'mailingAddress'],
 	},
 };
 
@@ -130,9 +159,9 @@ export interface ExtractInput {
 	content: ExtractContent;
 }
 
-export type BureauData = z.infer<typeof BureauRequirements>;
+export type ExtractedBureauData = z.infer<typeof ExtractedBureauRequirements>;
 
-export async function extractRequirements(input: ExtractInput): Promise<BureauData> {
+export async function extractRequirements(input: ExtractInput): Promise<ExtractedBureauData> {
 	const apiKey = process.env.ANTHROPIC_API_KEY;
 	if (!apiKey) {
 		throw new Error('ANTHROPIC_API_KEY is not set');
@@ -188,7 +217,7 @@ Source URL: ${input.bureau.url}
 		);
 	}
 
-	const result = BureauRequirements.safeParse(toolUseBlock.input);
+	const result = ExtractedBureauRequirements.safeParse(toolUseBlock.input);
 	if (!result.success) {
 		throw new Error(
 			`Tool input failed schema validation for ${input.bureau.name}.\n\nIssues:\n${result.error.issues

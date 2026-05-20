@@ -18,6 +18,15 @@ const baseBureau: BureauData = {
 		address: { logic: 'or', options: ['utility'] },
 		childId: { logic: 'and', options: ['birth_child', 'ssn_child'] },
 	},
+	mailingAddress: {
+		lines: ['Experian Security Freeze', 'P.O. Box 9554', 'Allen, TX 75013'],
+	},
+	form: {
+		url: 'https://www.experian.com/help/minor-request.html',
+		type: 'online_form',
+		resolves: true,
+		contentHash: 'a'.repeat(64),
+	},
 };
 
 const baseState: State = {
@@ -139,6 +148,39 @@ describe('computeDiff', () => {
 		const diff = computeDiff(baseState, current);
 		expect(diff.hasChanges).toBe(true);
 		expect(diff.bureauChanges[0].categoryChanges.address?.notesChange).toBeDefined();
+	});
+
+	it('detects a mailing address change and sets hasAddressChanges', () => {
+		const current = clone(baseState);
+		current.bureaus[0].mailingAddress.lines = [
+			'Experian Security Freeze',
+			'PO Box 9999',
+			'Allen, TX 75013',
+		];
+		const diff = computeDiff(baseState, current);
+		expect(diff.hasChanges).toBe(true);
+		expect(diff.hasAddressChanges).toBe(true);
+		expect(diff.bureauChanges[0].mailingAddressChange).toBeDefined();
+		expect(diff.bureauChanges[0].mailingAddressChange?.to.lines).toContain('PO Box 9999');
+	});
+
+	it('does not flag hasAddressChanges when only requirements change', () => {
+		const current = clone(baseState);
+		current.bureaus[0].categories.childId.logic = 'or';
+		const diff = computeDiff(baseState, current);
+		expect(diff.hasChanges).toBe(true);
+		expect(diff.hasAddressChanges).toBe(false);
+	});
+
+	it('detects an address-notes-only change but does NOT flag it high-priority', () => {
+		const current = clone(baseState);
+		current.bureaus[0].mailingAddress.notes = 'Updated note';
+		const diff = computeDiff(baseState, current);
+		expect(diff.hasChanges).toBe(true);
+		// Notes-only address changes show in the diff, but they shouldn't trigger
+		// the high-priority address alert — that's reserved for real line changes.
+		expect(diff.hasAddressChanges).toBe(false);
+		expect(diff.bureauChanges[0].mailingAddressChange?.linesChanged).toBe(false);
 	});
 
 	it('detects a sourceUrl change', () => {

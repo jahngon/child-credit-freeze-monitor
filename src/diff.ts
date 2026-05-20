@@ -20,6 +20,15 @@ export interface DocumentChange {
 	descriptionChange?: { from: string | null; to: string | null };
 }
 
+export interface MailingAddressChange {
+	from: { lines: string[]; notes?: string };
+	to: { lines: string[]; notes?: string };
+	/** True if the actual address lines differ. False = only the LLM's notes field changed
+	 * (often just commentary rephrasing). Only `linesChanged: true` triggers the high-priority
+	 * address alert; notes-only changes ride in the regular digest. */
+	linesChanged: boolean;
+}
+
 export interface BureauChange {
 	bureau: string;
 	sourceUrlChange?: { from: string; to: string };
@@ -27,6 +36,7 @@ export interface BureauChange {
 	documentsRemoved: DocumentData[];
 	documentsChanged: DocumentChange[];
 	categoryChanges: Partial<Record<CategoryKey, CategoryChange>>;
+	mailingAddressChange?: MailingAddressChange;
 }
 
 export interface DiffResult {
@@ -34,6 +44,9 @@ export interface DiffResult {
 	bureauChanges: BureauChange[];
 	bureausAdded: BureauData[];
 	bureausRemoved: BureauData[];
+	/** Convenience flag: true if any bureau's mailing address changed.
+	 * Used to route the high-priority address alert separately from the regular digest. */
+	hasAddressChanges: boolean;
 }
 
 /**
@@ -49,12 +62,15 @@ export function computeDiff(prior: State | null, current: State): DiffResult {
 		bureauChanges: [],
 		bureausAdded: [],
 		bureausRemoved: [],
+		hasAddressChanges: false,
 	};
 
 	if (!prior) {
 		if (current.bureaus.length > 0) {
 			result.hasChanges = true;
 			result.bureausAdded = [...current.bureaus];
+			// Treat first-run as "everything new" — the digest covers it.
+			// We don't flag address-changes because no prior baseline existed.
 		}
 		return result;
 	}
@@ -72,6 +88,7 @@ export function computeDiff(prior: State | null, current: State): DiffResult {
 			if (change) {
 				result.bureauChanges.push(change);
 				result.hasChanges = true;
+				if (change.mailingAddressChange?.linesChanged) result.hasAddressChanges = true;
 			}
 		}
 	}
@@ -145,7 +162,38 @@ function diffBureau(prior: BureauData, current: BureauData): BureauChange | null
 		}
 	}
 
+	const addrChange = diffMailingAddress(prior.mailingAddress, current.mailingAddress);
+	if (addrChange) {
+		change.mailingAddressChange = addrChange;
+		dirty = true;
+	}
+
 	return dirty ? change : null;
+}
+
+function diffMailingAddress(
+	prior: BureauData['mailingAddress'],
+	current: BureauData['mailingAddress']
+): MailingAddressChange | null {
+	const priorLines = prior.lines.map((l) => l.trim());
+	const currentLines = current.lines.map((l) => l.trim());
+	const linesDiffer =
+		priorLines.length !== currentLines.length ||
+		priorLines.some((l, i) => l !== currentLines[i]);
+	const priorNotes = (prior.notes ?? '').trim();
+	const currentNotes = (current.notes ?? '').trim();
+	const notesDiffer = priorNotes !== currentNotes;
+
+	if (!linesDiffer && !notesDiffer) return null;
+
+	return {
+		from: { lines: prior.lines, ...(prior.notes !== undefined ? { notes: prior.notes } : {}) },
+		to: {
+			lines: current.lines,
+			...(current.notes !== undefined ? { notes: current.notes } : {}),
+		},
+		linesChanged: linesDiffer,
+	};
 }
 
 function diffCategory(prior: CategoryData, current: CategoryData): CategoryChange | null {
@@ -226,6 +274,17 @@ export function formatDiff(diff: DiffResult): string {
 					`  ~ Document ${dc.id} description: "${dc.descriptionChange.from ?? ''}" → "${dc.descriptionChange.to ?? ''}"`
 				);
 			}
+		}
+
+		if (bureauChange.mailingAddressChange) {
+			const a = bureauChange.mailingAddressChange;
+			lines.push('  Mailing address changed:');
+			lines.push('    From:');
+			for (const ln of a.from.lines) lines.push(`      ${ln}`);
+			if (a.from.notes) lines.push(`      (notes: ${a.from.notes})`);
+			lines.push('    To:');
+			for (const ln of a.to.lines) lines.push(`      ${ln}`);
+			if (a.to.notes) lines.push(`      (notes: ${a.to.notes})`);
 		}
 
 		for (const [cat, catChange] of Object.entries(bureauChange.categoryChanges)) {

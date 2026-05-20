@@ -20,6 +20,15 @@ const validBureau = {
 		address: { logic: 'or' as const, options: ['utility'], notes: 'Within last 60 days' },
 		childId: { logic: 'or' as const, options: ['ssn_child', 'birth_child'] },
 	},
+	mailingAddress: {
+		lines: ['Experian Security Freeze', 'P.O. Box 9554', 'Allen, TX 75013'],
+	},
+	form: {
+		url: 'https://www.experian.com/help/minor-request.html',
+		type: 'online_form' as const,
+		resolves: true,
+		contentHash: 'a'.repeat(64),
+	},
 };
 
 describe('DocumentOption', () => {

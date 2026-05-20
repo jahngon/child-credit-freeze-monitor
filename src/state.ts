@@ -13,18 +13,37 @@ export const PUBLIC_STATE_PATH = 'data/state.public.json';
 export const SNAPSHOTS_DIR = 'data/snapshots';
 
 /**
- * Read data/state.json. Returns null if the file doesn't exist (first run).
- * Throws on read or parse error so the operator notices.
+ * Read data/state.json. Returns null if the file doesn't exist (first run) OR
+ * if the file doesn't match the current schema (one-time migration window after
+ * a schema bump — we log and treat as first run so the script can repopulate).
+ * Throws on lower-level read errors (permissions, IO).
  */
 export async function readState(): Promise<State | null> {
+	let text: string;
 	try {
-		const text = await fs.readFile(STATE_PATH, 'utf8');
-		const parsed = JSON.parse(text);
-		return StateSchema.parse(parsed);
+		text = await fs.readFile(STATE_PATH, 'utf8');
 	} catch (err) {
 		if ((err as NodeJS.ErrnoException).code === 'ENOENT') return null;
 		throw err;
 	}
+
+	let parsed: unknown;
+	try {
+		parsed = JSON.parse(text);
+	} catch (err) {
+		console.warn(`[state] ${STATE_PATH} is not valid JSON; treating as first run. (${(err as Error).message})`);
+		return null;
+	}
+
+	const result = StateSchema.safeParse(parsed);
+	if (!result.success) {
+		console.warn(
+			`[state] ${STATE_PATH} does not match the current schema; treating as first run. Issues:\n${result.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n')}`
+		);
+		return null;
+	}
+
+	return result.data;
 }
 
 /**

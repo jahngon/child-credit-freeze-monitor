@@ -1,22 +1,28 @@
+import crypto from 'node:crypto';
 import { BUREAUS } from './bureaus.js';
 import type { BureauKey } from './bureaus.js';
 import { fetchUrl, fetchUrlWithBrowser, fetchPdfBase64, cleanHtml } from './fetch.js';
 import { extractRequirements } from './extract.js';
-import type { BureauData, ExtractContent } from './extract.js';
+import type { ExtractContent } from './extract.js';
 import {
 	readState,
 	writeState,
 	writeSnapshot,
 	PUBLIC_STATE_PATH,
 	type State,
+	type BureauData,
 } from './state.js';
 import { computeDiff, formatDiff } from './diff.js';
 import { readOverrides, applyOverrides } from './overrides.js';
-import { sendChangeAlert, sendFailureAlert } from './notify.js';
+import { sendChangeAlert, sendAddressChangeAlert, sendFailureAlert } from './notify.js';
 
 interface FetchedContent {
 	html?: string;
 	pdfBase64?: string;
+}
+
+function sha256(content: string): string {
+	return crypto.createHash('sha256').update(content).digest('hex');
 }
 
 async function main() {
@@ -39,6 +45,7 @@ async function main() {
 		console.error(`[fetch] ← ${bureau.url}`);
 
 		let content: ExtractContent;
+		let hashInput: string;
 		if (bureau.format === 'pdf') {
 			const base64 = await fetchPdfBase64(bureau.url);
 			console.error(
@@ -46,13 +53,33 @@ async function main() {
 			);
 			content = { kind: 'pdf', base64 };
 			fetchedByBureau.set(bureau.key, { pdfBase64: base64 });
+			hashInput = base64;
 		} else if (bureau.useBrowser) {
 			const rawHtml = await fetchUrlWithBrowser(bureau.url);
 			console.error(`[browser] received ${rawHtml.length.toLocaleString()} bytes`);
-			const cleaned = cleanHtml(rawHtml);
+			let cleaned = cleanHtml(rawHtml);
 			console.error(`[clean] reduced to ${cleaned.length.toLocaleString()} chars`);
+
+			// Optionally fetch a secondary page (e.g. TransUnion's mail-or-phone page
+			// where the protected-consumer-freeze address lives) and concatenate.
+			if (bureau.addressSourceUrl) {
+				console.error(`[browser] also fetching address page ← ${bureau.addressSourceUrl}`);
+				const addrHtml = await fetchUrlWithBrowser(bureau.addressSourceUrl);
+				const addrCleaned = cleanHtml(addrHtml);
+				console.error(
+					`[clean] address page reduced to ${addrCleaned.length.toLocaleString()} chars`
+				);
+				cleaned =
+					cleaned +
+					'\n\n--- ADDRESS-SOURCE PAGE (' +
+					bureau.addressSourceUrl +
+					') ---\n\n' +
+					addrCleaned;
+			}
+
 			content = { kind: 'text', value: cleaned };
 			fetchedByBureau.set(bureau.key, { html: rawHtml });
+			hashInput = cleaned;
 		} else {
 			const rawHtml = await fetchUrl(bureau.url);
 			console.error(`[fetch] received ${rawHtml.length.toLocaleString()} bytes`);
@@ -60,12 +87,25 @@ async function main() {
 			console.error(`[clean] reduced to ${cleaned.length.toLocaleString()} chars`);
 			content = { kind: 'text', value: cleaned };
 			fetchedByBureau.set(bureau.key, { html: rawHtml });
+			hashInput = cleaned;
 		}
 
 		console.error(`[extract] calling Claude...`);
-		const result = await extractRequirements({ bureau, content });
+		const extracted = await extractRequirements({ bureau, content });
 		console.error(`[extract] success`);
-		results.push(result);
+
+		// Assemble the full BureauData. The LLM returned everything except `form`;
+		// we compute `form` here from bureau config + the fetch result.
+		const fullBureau: BureauData = {
+			...extracted,
+			form: {
+				url: bureau.formUrl ?? bureau.url,
+				type: bureau.formType,
+				resolves: true, // we got content back, so the URL resolved
+				contentHash: sha256(hashInput),
+			},
+		};
+		results.push(fullBureau);
 	}
 
 	// 3. Build candidate new state. lastChanged carries from prior unless content actually changed.
@@ -118,8 +158,19 @@ async function main() {
 	await writeState(publicState, PUBLIC_STATE_PATH);
 	console.error(`[state] wrote ${PUBLIC_STATE_PATH}`);
 
-	// 8. Email the operator if anything changed. Failure here doesn't fail the run —
-	// the state file is already written; an email problem shouldn't roll that back.
+	// 8. Email the operator if anything changed.
+	// Address changes are high-priority — they get their own dedicated email in addition
+	// to (not instead of) the regular digest, so they're impossible to miss in a busy inbox.
+	if (diff.hasAddressChanges) {
+		try {
+			await sendAddressChangeAlert(diff);
+			console.error(`[notify] HIGH-PRIORITY address change alert sent`);
+		} catch (err) {
+			console.error(
+				`[notify] failed to send address change alert: ${err instanceof Error ? err.message : String(err)}`
+			);
+		}
+	}
 	if (diff.hasChanges) {
 		try {
 			await sendChangeAlert(diff);

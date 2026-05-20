@@ -91,6 +91,65 @@ export async function sendChangeAlert(diff: DiffResult): Promise<void> {
 }
 
 /**
+ * High-priority email: a bureau's mailing address changed. This is the single
+ * highest-stakes data in the tool, so it gets its own dedicated email distinct
+ * from the regular change digest. The subject prefix uppercases ADDRESS so it's
+ * visible in any inbox triage view.
+ *
+ * No-op if no address changed.
+ */
+export async function sendAddressChangeAlert(diff: DiffResult): Promise<void> {
+	if (!diff.hasAddressChanges) return;
+
+	const config = loadConfig();
+	const resend = new Resend(config.apiKey);
+
+	const date = new Date().toISOString().slice(0, 10);
+	const repoUrl = getRepoUrl();
+
+	const changedBureaus = diff.bureauChanges.filter((b) => b.mailingAddressChange);
+
+	const subject =
+		changedBureaus.length === 1
+			? `[Bureau Monitor — ADDRESS CHANGE] ${changedBureaus[0].bureau} mailing address changed`
+			: `[Bureau Monitor — ADDRESS CHANGE] ${changedBureaus.length} bureau mailing addresses changed`;
+
+	const bodyLines = [
+		`HIGH PRIORITY — a bureau mailing address changed on ${date}.`,
+		'',
+		'A wrong address means a parent\'s request goes nowhere. Verify the new address against the bureau\'s own page before letting this change propagate to the live site. If wrong, patch data/manual_overrides.json — overrides take precedence.',
+		'',
+	];
+
+	for (const bc of changedBureaus) {
+		const a = bc.mailingAddressChange!;
+		bodyLines.push(`Bureau: ${bc.bureau}`);
+		bodyLines.push('  From:');
+		for (const ln of a.from.lines) bodyLines.push(`    ${ln}`);
+		if (a.from.notes) bodyLines.push(`    (notes: ${a.from.notes})`);
+		bodyLines.push('  To:');
+		for (const ln of a.to.lines) bodyLines.push(`    ${ln}`);
+		if (a.to.notes) bodyLines.push(`    (notes: ${a.to.notes})`);
+		bodyLines.push('');
+	}
+
+	if (repoUrl) {
+		bodyLines.push(`Recent commits: ${repoUrl}/commits/main`);
+	}
+
+	const result = await resend.emails.send({
+		from: FROM_ADDRESS,
+		to: config.toEmail,
+		subject,
+		text: bodyLines.join('\n'),
+	});
+
+	if (result.error) {
+		throw new Error(`Resend returned error: ${JSON.stringify(result.error)}`);
+	}
+}
+
+/**
  * Email the operator that the daily check itself failed (fetch error, LLM
  * error, schema validation failure, etc.). Best-effort — if email also fails,
  * we log to stderr and move on; we never throw from this function.

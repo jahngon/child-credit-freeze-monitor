@@ -24,6 +24,29 @@ export const RequirementCategory = z.object({
 });
 
 /**
+ * Where the parent mails their request. Extracted by the LLM from each bureau's
+ * source page. Stored as lines (e.g. ["Equifax Information Services LLC",
+ * "P.O. Box 105788", "Atlanta, GA 30348-5788"]) so the widget can format flexibly.
+ */
+export const MailingAddress = z.object({
+	lines: z.array(z.string().min(1)).min(1),
+	notes: z.string().optional(),
+});
+
+/**
+ * The bureau's submission form (Equifax PDF, Experian online form, or "letter"
+ * for TransUnion which has no form). `url`, `type`, `resolves`, and `contentHash`
+ * are computed during the monitor run, not by the LLM.
+ */
+export const Form = z.object({
+	url: z.string().url(),
+	type: z.enum(['pdf_form', 'online_form', 'letter']),
+	resolves: z.boolean(),
+	contentHash: z.string().optional(),
+	notes: z.string().optional(),
+});
+
+/**
  * The complete extracted state for one bureau.
  */
 export const BureauRequirements = z.object({
@@ -36,7 +59,16 @@ export const BureauRequirements = z.object({
 		address: RequirementCategory,
 		childId: RequirementCategory,
 	}),
+	mailingAddress: MailingAddress,
+	form: Form,
 });
+
+/**
+ * The shape Claude returns from the extraction step — same as BureauRequirements
+ * minus `form`. `form` is computed by the monitor script after extraction (URL
+ * resolution check, content hash, formType from bureau config).
+ */
+export const ExtractedBureauRequirements = BureauRequirements.omit({ form: true });
 
 /**
  * The top-level state, persisted as data/state.json.
