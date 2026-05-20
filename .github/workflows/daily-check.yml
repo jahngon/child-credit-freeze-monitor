@@ -2,7 +2,7 @@ name: Daily bureau check
 
 on:
   schedule:
-    - cron: '0 13 * * *'   # 1pm UTC daily (~6am PT / 9am ET)
+    - cron: '17 13 * * *'  # 1:17pm UTC daily (~6:17am PT / 9:17am ET). Off-the-hour to reduce GitHub Actions cron skip rate.
   workflow_dispatch:        # allow manual trigger from the Actions tab
 
 jobs:
