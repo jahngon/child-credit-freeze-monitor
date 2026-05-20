@@ -1,6 +1,6 @@
 {
-  "lastChecked": "2026-05-20T05:09:06.832Z",
-  "lastChanged": "2026-05-20T05:09:06.832Z",
+  "lastChecked": "2026-05-20T19:36:01.720Z",
+  "lastChanged": "2026-05-20T19:36:01.720Z",
   "bureaus": [
     {
       "bureau": "equifax",
@@ -48,7 +48,7 @@
             "foster",
             "poa"
           ],
-          "notes": "The form lists these under 'To show you are the minor's parent or authorized representative' as OR options (one from this category is sufficient). The minor's birth certificate appears here as proof of parentage, and also under childId as proof of the child's identity — it is the same physical document."
+          "notes": "Listed under 'To show you are the minor's parent or authorized representative' — any one of these four options is sufficient."
         },
         "parentId": {
           "logic": "or",
@@ -57,12 +57,12 @@
             "id_parent",
             "ssn_parent"
           ],
-          "notes": "The form says 'provide one from each category' for the guardian; within the 'For proof of your identity' category the three bullets are OR options."
+          "notes": "Listed under 'For proof of your identity' with 'provide one from each category' — the three bullets within this category are OR options; pick one."
         },
         "address": {
           "logic": "na",
           "options": [],
-          "notes": "The form does not list a separate proof-of-address document category. The guardian's current address is collected on the form itself but no supporting address document is required."
+          "notes": "The form does not list a separate proof-of-address document category. The guardian's current address is collected on the form itself."
         },
         "childId": {
           "logic": "and",
@@ -70,7 +70,7 @@
             "birth_child",
             "ssn_child"
           ],
-          "notes": "The form explicitly says 'For the minor, please provide BOTH of the following' — the minor's Social Security card AND the minor's birth certificate are both required."
+          "notes": "The form explicitly states 'For the minor, please provide BOTH of the following' — both the minor's Social Security card and birth certificate are required."
         }
       },
       "mailingAddress": {
@@ -101,7 +101,7 @@
         },
         {
           "id": "id_parent",
-          "label": "Driver's license or another government issued identification card, such as a state ID card"
+          "label": "Driver's license or another government issued identification card (e.g. state ID card)"
         },
         {
           "id": "ssn_child",
@@ -109,7 +109,7 @@
         },
         {
           "id": "utility",
-          "label": "Proof of address, such as a copy of a bank statement, utility bill, insurance statement"
+          "label": "Proof of address (bank statement, utility bill, or insurance statement)"
         }
       ],
       "categories": {
@@ -119,7 +119,7 @@
             "birth_child",
             "court"
           ],
-          "notes": "The child's birth certificate serves as proof of authority when the parent is named on it. A separate proof of guardianship is required only if the parent is NOT named on the child's birth certificate — so these two are alternatives covering the same requirement."
+          "notes": "The child's birth certificate satisfies authority if the parent is named on it. If the parent is not named on the birth certificate, proof of guardianship (court order) is required instead. These are mutually exclusive alternatives."
         },
         "parentId": {
           "logic": "or",
@@ -134,12 +134,12 @@
           ]
         },
         "childId": {
-          "logic": "and",
+          "logic": "or",
           "options": [
             "birth_child",
             "ssn_child"
           ],
-          "notes": "The page explicitly lists both 'a copy of your child's birth certificate' and 'a copy of your child's Social Security card' as required items in the 'all of the following' list, making both mandatory for child identity verification."
+          "notes": "The page lists both the child's birth certificate and the child's Social Security card as required documents. However, the birth certificate also serves the authority category. Both are listed as separate line items in the 'all of the following' list, suggesting both are required for a complete submission."
         }
       },
       "mailingAddress": {
@@ -148,7 +148,7 @@
           "PO Box 9554",
           "Allen, TX 75013"
         ],
-        "notes": "The page lists two addresses: standard mail (PO Box 9554) and overnight mail (701 Experian Parkway). The standard mail address is the primary mailing address for this request."
+        "notes": "The page lists two addresses: standard mail (PO Box 9554) and overnight mail (701 Experian Parkway). The standard mail address is the primary mailing address. Neither is explicitly labeled 'protected consumer freeze' — this page covers checking if a minor has a credit report, but the same address is used for all minor-related requests including security freezes per the page structure."
       },
       "form": {
         "url": "https://www.experian.com/help/minor-request.html",
@@ -166,6 +166,11 @@
           "label": "A document issued by a Federal, State, or local government agency showing proof of parentage, including a birth certificate"
         },
         {
+          "id": "birth_child_id",
+          "label": "Certified or official copy of a birth certificate issued by the entity authorized to issue the birth certificate (child)",
+          "description": "Child's certified/official birth certificate used to prove the child's identity (distinct use from the parentage/authority birth certificate, but physically the same document type — child's birth certificate)"
+        },
+        {
           "id": "birth_parent",
           "label": "Certified or official copy of a birth certificate issued by the entity authorized to issue the birth certificate (parent)"
         },
@@ -175,7 +180,7 @@
         },
         {
           "id": "foster",
-          "label": "Written communication from a county welfare or probation department certifying the protected consumer is in a foster care setting"
+          "label": "Written communication from a county welfare/probation department certifying the protected consumer is in a foster care setting"
         },
         {
           "id": "id_child",
@@ -207,7 +212,7 @@
             "foster",
             "poa"
           ],
-          "notes": "The page requires one piece of documentation proving sufficient proof of authority. The birth certificate listed here (proof of parentage) is the same physical document as birth_child, which also satisfies childId."
+          "notes": "The page requires one piece of documentation proving sufficient proof of authority. The birth certificate listed here (proof of parentage) is the same physical document as the child's birth certificate; it satisfies authority by proving parentage."
         },
         "parentId": {
           "logic": "or",
@@ -216,12 +221,12 @@
             "id_parent",
             "ssn_parent"
           ],
-          "notes": "TransUnion requires sufficient proof of identification for the parent. Any one of these documents satisfies the requirement. These are listed together with childId documents under a single step 3, but the page makes clear one document per person is needed."
+          "notes": "TransUnion requires 'sufficient proof of identification' for the parent. The page lists these as examples from which one is sufficient."
         },
         "address": {
           "logic": "na",
           "options": [],
-          "notes": "TransUnion does not explicitly require a separate proof-of-address document for the Protected Consumer Freeze. Address proof is only mentioned as optional for standard adult freeze requests."
+          "notes": "The protected consumer freeze instructions do not require a separate proof-of-address document. Address proof is only mentioned as optional (not required) for standard adult freeze requests."
         },
         "childId": {
           "logic": "or",
@@ -230,7 +235,7 @@
             "id_child",
             "ssn_child"
           ],
-          "notes": "TransUnion requires sufficient proof of identification for the minor. Any one of these documents satisfies the requirement. The birth_child document also appears under authority (proof of parentage) — it is the same physical document referenced in both categories."
+          "notes": "TransUnion requires 'sufficient proof of identification' for the minor as well. The same document types are listed for both parent and child identity; the child's birth certificate (birth_child) also satisfies this category. One document is sufficient."
         }
       },
       "mailingAddress": {
@@ -239,13 +244,13 @@
           "P.O. Box 380",
           "Woodlyn, PA 19094"
         ],
-        "notes": "This address is explicitly labeled for the Protected Consumer Freeze (minor/incapacitated adult) on the address-source page (transunion.com/credit-freeze/mail-or-phone). It is distinct from the standard adult freeze address (P.O. Box 160, Woodlyn, PA 19094)."
+        "notes": "This is the dedicated Protected Consumer Freeze address, explicitly stated in the ADDRESS-SOURCE PAGE for the minor/incapacitated adult freeze. It differs from the standard adult freeze address (P.O. Box 160, Woodlyn, PA 19094)."
       },
       "form": {
         "url": "https://www.transunion.com/credit-freeze/credit-freeze-faq",
         "type": "letter",
         "resolves": true,
-        "contentHash": "7fdbeb675e4d1c4d4528f787dc09c28fe29bad5c2a66bcc24c831d0aa9b6f7f6"
+        "contentHash": "64dfc5f77afd4138ba85e9c1f30bb9200504c0b8d2c386781ad630f98ced59c6"
       }
     }
   ]
