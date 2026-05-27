@@ -206,10 +206,9 @@
             "birth_child",
             "court",
             "foster",
-            "guardianship",
             "poa"
           ],
-          "notes": "The page says 'one piece of documentation' from this list is sufficient. A birth certificate (birth_child) is listed here as proof of parentage/authority, and also satisfies childId."
+          "notes": "The page requires one piece of documentation proving sufficient proof of authority. Guardianship/conservator documents are grouped under 'court' for the widget display."
         },
         "parentId": {
           "logic": "or",
