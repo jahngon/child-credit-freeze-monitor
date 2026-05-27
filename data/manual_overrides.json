@@ -1,3 +1,20 @@
 {
-  "bureaus": {}
+  "bureaus": {
+    "transunion": {
+      "documents": [
+        {
+          "id": "guardianship",
+          "label": "A guardianship or conservator document",
+          "description": "A guardianship or conservator document that is current and not expired, includes the protected consumer's name, and that the name of the person on the court document matches the name of the person submitting the request"
+        }
+      ],
+      "categories": {
+        "authority": {
+          "logic": "or",
+          "options": ["birth_child", "court", "foster", "guardianship", "poa"],
+          "notes": "The page requires one piece of documentation proving sufficient proof of authority. Guardianship/conservator documents were added to the website as a proof-of-authority option."
+        }
+      }
+    }
+  }
 }
