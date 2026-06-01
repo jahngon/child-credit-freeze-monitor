@@ -1,6 +1,6 @@
 {
-  "lastChecked": "2026-05-31T16:48:51.498Z",
-  "lastChanged": "2026-05-31T16:48:51.498Z",
+  "lastChecked": "2026-06-01T22:37:15.588Z",
+  "lastChanged": "2026-06-01T22:37:15.588Z",
   "bureaus": [
     {
       "bureau": "equifax",
@@ -48,7 +48,7 @@
             "foster",
             "poa"
           ],
-          "notes": "The form lists these under 'To show you are the minor's parent or authorized representative' as OR options — any one is sufficient. The minor's birth certificate appears here (authority) and also under childId."
+          "notes": "Listed under 'To show you are the minor's parent or authorized representative' — any one of these is sufficient."
         },
         "parentId": {
           "logic": "or",
@@ -57,12 +57,12 @@
             "id_parent",
             "ssn_parent"
           ],
-          "notes": "The form says 'provide one from each category' and lists these three under 'For proof of your identity' — any one is sufficient."
+          "notes": "Listed under 'For proof of your identity' with 'provide one from each category' — the bullets within this category are OR options."
         },
         "address": {
           "logic": "na",
           "options": [],
-          "notes": "The form does not list a separate proof-of-address document category. The guardian's current address is collected on the form itself but no supporting address document is required."
+          "notes": "The form does not list a separate proof-of-address document category; the guardian's current address is collected on the form itself."
         },
         "childId": {
           "logic": "and",
@@ -163,35 +163,44 @@
       "documents": [
         {
           "id": "birth_child",
-          "label": "Child's birth certificate"
+          "label": "A document issued by a federal, state, or local government agency showing proof of parentage, including a birth certificate"
+        },
+        {
+          "id": "birth_parent",
+          "label": "Certified or official copy of a birth certificate issued by the entity authorized to issue the birth certificate (parent)"
         },
         {
           "id": "court",
-          "label": "Court order or legal guardianship document"
+          "label": "An order issued by a court of law"
         },
         {
           "id": "foster",
-          "label": "Foster care placement document"
+          "label": "Written communication from a county welfare/probation department certifying foster care placement"
+        },
+        {
+          "id": "guardianship",
+          "label": "A guardianship or conservator document that is current and not expired, includes the protected consumer's name, and the name matches the person submitting the request",
+          "description": "Guardianship or conservatorship document naming the requestor as guardian/conservator of the protected consumer"
+        },
+        {
+          "id": "id_child",
+          "label": "Copy of a driver's license, state-issued identification card, or any other government-issued identification (minor)"
         },
         {
           "id": "id_parent",
-          "label": "Parent's government-issued ID"
+          "label": "Copy of a driver's license, state-issued identification card, or any other government-issued identification (parent)"
         },
         {
           "id": "poa",
-          "label": "Power of attorney"
+          "label": "A lawfully executed and valid power of attorney"
         },
         {
           "id": "ssn_child",
-          "label": "Child's Social Security card or number"
+          "label": "Social Security number or a copy of a Social Security card (minor)"
         },
         {
           "id": "ssn_parent",
-          "label": "Parent's Social Security card or number"
-        },
-        {
-          "id": "utility",
-          "label": "Utility bill or proof of address"
+          "label": "Social Security number or a copy of a Social Security card (parent)"
         }
       ],
       "categories": {
@@ -208,40 +217,40 @@
         "parentId": {
           "logic": "or",
           "options": [
+            "birth_parent",
             "id_parent",
             "ssn_parent"
           ],
-          "notes": "Page was blocked by Cloudflare and no content was retrievable. Options are inferred from TransUnion's known standard requirements."
+          "notes": "The page groups parent and child identity documents together under one 'sufficient proof of identification' section, listing SSN/card, birth certificate, and government-issued ID as options. Any one is sufficient for the parent."
         },
         "address": {
-          "logic": "or",
-          "options": [
-            "utility"
-          ],
-          "notes": "Page was blocked by Cloudflare and no content was retrievable. Options are inferred from TransUnion's known standard requirements."
+          "logic": "na",
+          "options": [],
+          "notes": "The page does not list a proof-of-address requirement for the protected consumer freeze request."
         },
         "childId": {
           "logic": "or",
           "options": [
             "birth_child",
+            "id_child",
             "ssn_child"
           ],
-          "notes": "Page was blocked by Cloudflare and no content was retrievable. Options are inferred from TransUnion's known standard requirements."
+          "notes": "The page requires 'sufficient proof of identification' for both the parent AND the minor. The same document types apply: SSN/card, birth certificate, or government-issued ID. The child's birth certificate (birth_child) also appears in the authority category."
         }
       },
       "mailingAddress": {
         "lines": [
-          "TransUnion Protected Consumer Freeze",
+          "TransUnion",
           "P.O. Box 380",
           "Woodlyn, PA 19094"
         ],
-        "notes": "Page was blocked by Cloudflare; both the main page and the address-source page returned Cloudflare block errors. This address is TransUnion's known standard mailing address for a Protected Consumer (minor) freeze and should be verified against the live page."
+        "notes": "This address is explicitly labeled on the page as 'the dedicated mailing address for protected consumer freezes at TransUnion.' It is distinct from the standard freeze removal address (P.O. Box 160, Woodlyn, PA 19094)."
       },
       "form": {
         "url": "https://www.transunion.com/credit-freeze/credit-freeze-faq",
         "type": "letter",
         "resolves": true,
-        "contentHash": "f07907629d4e9125e1ccba7dde2de377865f531f46a04be38a38728506f701d9"
+        "contentHash": "8bbd5f10de3a97394eb35fef7fd48539d0baf89fec2b3153ffb8adc6ef4ce105"
       }
     }
   ]
