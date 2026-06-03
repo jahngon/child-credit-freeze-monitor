@@ -7,6 +7,10 @@
           "options": ["birth_child", "court", "foster", "poa"],
           "notes": "The page requires one piece of documentation proving sufficient proof of authority. Guardianship/conservator documents are grouped under 'court' for the widget display."
         }
+      },
+      "mailingAddress": {
+        "lines": ["TransUnion", "P.O. Box 380", "Woodlyn, PA 19094"],
+        "notes": "Verified Protected Consumer Freeze (minor) address. Pinned via override because TransUnion's pages are intermittently blocked by Cloudflare, which causes extraction to emit a placeholder address. The standard adult freeze address (P.O. Box 160, Woodlyn, PA 19094) is NOT used for minor freezes."
       }
     }
   }

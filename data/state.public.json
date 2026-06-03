@@ -236,11 +236,11 @@
       },
       "mailingAddress": {
         "lines": [
-          "TransUnion Protected Consumer Freeze",
-          "<UNKNOWN>",
-          "<UNKNOWN>"
+          "TransUnion",
+          "P.O. Box 380",
+          "Woodlyn, PA 19094"
         ],
-        "notes": "Both the main FAQ page and the address-source page (transunion.com/credit-freeze/mail-or-phone) were blocked by Cloudflare security verification. The mailing address could not be extracted. Manual verification is required before shipping this address to parents."
+        "notes": "Verified Protected Consumer Freeze (minor) address. Pinned via override because TransUnion's pages are intermittently blocked by Cloudflare, which causes extraction to emit a placeholder address. The standard adult freeze address (P.O. Box 160, Woodlyn, PA 19094) is NOT used for minor freezes."
       },
       "form": {
         "url": "https://www.transunion.com/credit-freeze/credit-freeze-faq",

@@ -15,6 +15,11 @@ interface OverrideDocument {
 	description?: string;
 }
 
+interface OverrideMailingAddress {
+	lines?: string[];
+	notes?: string | null;
+}
+
 interface OverrideBureau {
 	sourceUrl?: string;
 	documents?: OverrideDocument[];
@@ -24,6 +29,7 @@ interface OverrideBureau {
 		address: OverrideCategory;
 		childId: OverrideCategory;
 	}>;
+	mailingAddress?: OverrideMailingAddress;
 }
 
 export interface Overrides {
@@ -97,9 +103,27 @@ export function applyOverrides(state: State, overrides: Overrides): State {
 				applyCategoryOverride(target, catOverride);
 			}
 		}
+
+		if (override.mailingAddress) {
+			applyMailingAddressOverride(bureau.mailingAddress, override.mailingAddress);
+		}
 	}
 
 	return merged;
+}
+
+function applyMailingAddressOverride(
+	target: BureauData['mailingAddress'],
+	override: OverrideMailingAddress
+): void {
+	if (override.lines !== undefined) target.lines = [...override.lines];
+	if (override.notes !== undefined) {
+		if (override.notes === null) {
+			delete target.notes;
+		} else {
+			target.notes = override.notes;
+		}
+	}
 }
 
 function applyCategoryOverride(target: CategoryData, override: OverrideCategory): void {
