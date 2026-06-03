@@ -1,11 +1,27 @@
 {
   "bureaus": {
     "transunion": {
+      "documents": [
+        {
+          "id": "birth_parent",
+          "label": "Parent's birth certificate"
+        }
+      ],
       "categories": {
         "authority": {
           "logic": "or",
           "options": ["birth_child", "court", "foster", "poa"],
           "notes": "The page requires one piece of documentation proving sufficient proof of authority. Guardianship/conservator documents are grouped under 'court' for the widget display."
+        },
+        "parentId": {
+          "logic": "or",
+          "options": ["birth_parent", "id_parent", "ssn_parent"],
+          "notes": "Verified from TransUnion's site: a parent's birth certificate is an accepted proof of parent identity, alongside government-issued ID and Social Security card. Pinned via override because the page is intermittently blocked by Cloudflare."
+        },
+        "address": {
+          "logic": "na",
+          "options": [],
+          "notes": "Verified from TransUnion's site: a utility bill / bank statement / insurance bill (proof of address) is NOT required for the protected consumer (minor) freeze. Pinned via override because the page is intermittently blocked by Cloudflare."
         }
       },
       "mailingAddress": {

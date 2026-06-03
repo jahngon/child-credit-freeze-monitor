@@ -166,6 +166,10 @@
           "label": "Child's birth certificate"
         },
         {
+          "id": "birth_parent",
+          "label": "Parent's birth certificate"
+        },
+        {
           "id": "court",
           "label": "Court order or legal guardianship document"
         },
@@ -212,17 +216,16 @@
         "parentId": {
           "logic": "or",
           "options": [
+            "birth_parent",
             "id_parent",
             "ssn_parent"
           ],
-          "notes": "Page was blocked by Cloudflare and no content was retrievable. Requirements are filled with best-guess defaults. Manual verification strongly recommended."
+          "notes": "Verified from TransUnion's site: a parent's birth certificate is an accepted proof of parent identity, alongside government-issued ID and Social Security card. Pinned via override because the page is intermittently blocked by Cloudflare."
         },
         "address": {
-          "logic": "or",
-          "options": [
-            "utility"
-          ],
-          "notes": "Page was blocked by Cloudflare and no content was retrievable. Requirements are filled with best-guess defaults. Manual verification strongly recommended."
+          "logic": "na",
+          "options": [],
+          "notes": "Verified from TransUnion's site: a utility bill / bank statement / insurance bill (proof of address) is NOT required for the protected consumer (minor) freeze. Pinned via override because the page is intermittently blocked by Cloudflare."
         },
         "childId": {
           "logic": "or",
