@@ -1,5 +1,14 @@
 {
   "bureaus": {
+    "experian": {
+      "categories": {
+        "childId": {
+          "logic": "and",
+          "options": ["birth_child", "ssn_child"],
+          "notes": "Both the child's birth certificate AND Social Security card are required. Pinned via override because LLM extraction has been inconsistent on this category's logic."
+        }
+      }
+    },
     "transunion": {
       "documents": [
         {

@@ -134,12 +134,12 @@
           ]
         },
         "childId": {
-          "logic": "or",
+          "logic": "and",
           "options": [
             "birth_child",
             "ssn_child"
           ],
-          "notes": "The page lists both the child's birth certificate and the child's Social Security card as required documents. However, the birth certificate also serves the authority category. Both are listed as separate line items in the 'all of the following' list, suggesting both are required for a complete submission. Setting logic to 'and' to reflect that both documents are explicitly listed as required."
+          "notes": "Both the child's birth certificate AND Social Security card are required. Pinned via override because LLM extraction has been inconsistent on this category's logic."
         }
       },
       "mailingAddress": {
