@@ -1,6 +1,6 @@
 {
-  "lastChecked": "2026-06-05T19:25:14.999Z",
-  "lastChanged": "2026-06-05T19:25:14.999Z",
+  "lastChecked": "2026-06-06T16:54:44.610Z",
+  "lastChanged": "2026-06-06T16:54:44.610Z",
   "bureaus": [
     {
       "bureau": "equifax",
@@ -48,7 +48,7 @@
             "foster",
             "poa"
           ],
-          "notes": "Listed under 'To show you are the minor's parent or authorized representative' — any one of these is sufficient."
+          "notes": "Listed under 'To show you are the minor's parent or authorized representative' — any one of these four options is sufficient."
         },
         "parentId": {
           "logic": "or",
@@ -57,12 +57,12 @@
             "id_parent",
             "ssn_parent"
           ],
-          "notes": "Listed under 'For proof of your identity' with 'provide one from each category' — the bullets within this category are OR options."
+          "notes": "Listed under 'For proof of your identity' with 'provide one from each category' — the three bullets within this category are OR options; pick one."
         },
         "address": {
           "logic": "na",
           "options": [],
-          "notes": "The form collects the guardian's current address as a form field but does not require a separate proof-of-address document."
+          "notes": "The form does not list a separate proof-of-address document category. The guardian's current address is collected on the form itself."
         },
         "childId": {
           "logic": "and",
@@ -70,7 +70,7 @@
             "birth_child",
             "ssn_child"
           ],
-          "notes": "The form explicitly states 'please provide both of the following' for the minor's documents, making this a true AND requirement."
+          "notes": "The form explicitly states 'please provide BOTH of the following' for the minor's documents, requiring both the Social Security card and birth certificate."
         }
       },
       "mailingAddress": {
@@ -119,7 +119,7 @@
             "birth_child",
             "court"
           ],
-          "notes": "The child's birth certificate satisfies authority if the parent is named on it. A separate proof of guardianship is required only if the parent is NOT named on the birth certificate — so these two are alternatives covering the same authority requirement."
+          "notes": "The child's birth certificate establishes parentage/authority if the parent is named on it. A separate proof of guardianship is required only if the parent is NOT named on the birth certificate — so these two together cover all authority cases, but only one will typically apply."
         },
         "parentId": {
           "logic": "or",
@@ -195,7 +195,7 @@
         },
         {
           "id": "utility",
-          "label": "Proof of address (utility bill, bank statement, etc.)"
+          "label": "Utility bill or proof of address"
         }
       ],
       "categories": {
@@ -224,12 +224,9 @@
           "notes": "Verified from TransUnion's site: a utility bill / bank statement / insurance bill (proof of address) is NOT required for the protected consumer (minor) freeze. Pinned via override because the page is intermittently blocked by Cloudflare."
         },
         "childId": {
-          "logic": "or",
-          "options": [
-            "birth_child",
-            "ssn_child"
-          ],
-          "notes": "Page content was blocked by Cloudflare bot protection and could not be read. Requirements are based on TransUnion's known standard protected consumer freeze policy. Verify against live page."
+          "logic": "na",
+          "options": [],
+          "notes": "Page content was blocked by Cloudflare and could not be retrieved. Requirements could not be extracted."
         }
       },
       "mailingAddress": {
@@ -244,7 +241,7 @@
         "url": "https://www.transunion.com/credit-freeze/credit-freeze-faq",
         "type": "letter",
         "resolves": true,
-        "contentHash": "ffe4093b4e8add5146b04a9bf9076a41ada822aa2b1ce758b890f9ceed695cd7"
+        "contentHash": "d0ea9e68a38b25dbd49c2f6127ba5268855f39d27f135f59d55cbd86231b91a4"
       }
     }
   ]
