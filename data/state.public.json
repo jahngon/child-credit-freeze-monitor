@@ -1,6 +1,6 @@
 {
-  "lastChecked": "2026-06-09T20:35:41.472Z",
-  "lastChanged": "2026-06-09T20:35:41.472Z",
+  "lastChecked": "2026-06-10T21:32:27.280Z",
+  "lastChanged": "2026-06-10T21:32:27.280Z",
   "bureaus": [
     {
       "bureau": "equifax",
@@ -48,7 +48,7 @@
             "foster",
             "poa"
           ],
-          "notes": "The form lists these under 'To show you are the minor's parent or authorized representative' as OR options — any one is sufficient."
+          "notes": "Listed under 'To show you are the minor's parent or authorized representative' — any one of these is sufficient."
         },
         "parentId": {
           "logic": "or",
@@ -57,12 +57,12 @@
             "id_parent",
             "ssn_parent"
           ],
-          "notes": "The form says 'provide one from each category' and lists these three under 'For proof of your identity' — any one is sufficient."
+          "notes": "Listed under 'For proof of your identity' with 'provide one from each category' — the bullets within this category are OR options."
         },
         "address": {
           "logic": "na",
           "options": [],
-          "notes": "The form does not list a separate proof-of-address document category. The guardian's current address is collected on the form itself."
+          "notes": "The form collects the guardian's current address as a form field but does not require a separate proof-of-address document."
         },
         "childId": {
           "logic": "and",
@@ -70,7 +70,7 @@
             "birth_child",
             "ssn_child"
           ],
-          "notes": "The form explicitly says 'For the minor, please provide BOTH of the following' — both the minor's Social Security card and birth certificate are required."
+          "notes": "The form explicitly states 'please provide both of the following' for the minor's documents, requiring both the Social Security card and birth certificate."
         }
       },
       "mailingAddress": {
@@ -224,12 +224,9 @@
           "notes": "Verified from TransUnion's site: a utility bill / bank statement / insurance bill (proof of address) is NOT required for the protected consumer (minor) freeze. Pinned via override because the page is intermittently blocked by Cloudflare."
         },
         "childId": {
-          "logic": "or",
-          "options": [
-            "birth_child",
-            "ssn_child"
-          ],
-          "notes": "Page was blocked by Cloudflare and no content was retrievable. Requirements are based on known TransUnion protected consumer freeze standards. Verify against live page content."
+          "logic": "na",
+          "options": [],
+          "notes": "Page content was blocked by Cloudflare and could not be retrieved. Requirements could not be extracted."
         }
       },
       "mailingAddress": {
@@ -244,7 +241,7 @@
         "url": "https://www.transunion.com/credit-freeze/credit-freeze-faq",
         "type": "letter",
         "resolves": true,
-        "contentHash": "44d39fa6f6ba8ede1288a69784c024c901d87379360338b31fcf201d62866760"
+        "contentHash": "fa5c1029a3236cf59be0beea91e4dd4f8ed9bfc3175a871c10e9e080ecb47a7c"
       }
     }
   ]
