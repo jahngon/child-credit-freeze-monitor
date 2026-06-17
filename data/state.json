@@ -1,6 +1,6 @@
 {
-  "lastChecked": "2026-06-16T22:04:05.910Z",
-  "lastChanged": "2026-06-16T22:04:05.910Z",
+  "lastChecked": "2026-06-17T21:22:13.996Z",
+  "lastChanged": "2026-06-17T21:22:13.996Z",
   "bureaus": [
     {
       "bureau": "equifax",
@@ -8,7 +8,7 @@
       "documents": [
         {
           "id": "birth_child",
-          "label": "The minor's birth certificate"
+          "label": "A copy of the minor's birth certificate"
         },
         {
           "id": "birth_parent",
@@ -48,7 +48,7 @@
             "foster",
             "poa"
           ],
-          "notes": "The form lists these under 'To show you are the minor's parent or authorized representative' as OR options — any one is sufficient."
+          "notes": "Listed under 'To show you are the minor's parent or authorized representative' — any one of these is sufficient."
         },
         "parentId": {
           "logic": "or",
@@ -57,7 +57,7 @@
             "id_parent",
             "ssn_parent"
           ],
-          "notes": "The form says 'provide one from each category' and lists these under 'For proof of your identity' — any one is sufficient."
+          "notes": "Listed under 'For proof of your identity' with 'provide one from each category' — the bullets within this sub-category are OR options."
         },
         "address": {
           "logic": "na",
@@ -134,12 +134,12 @@
           ]
         },
         "childId": {
-          "logic": "and",
+          "logic": "or",
           "options": [
             "birth_child",
             "ssn_child"
           ],
-          "notes": "The page explicitly lists both 'a copy of your child's birth certificate' AND 'a copy of your child's Social Security card' as required items in the 'all of the following' list, with no indication that either is optional or an alternative to the other."
+          "notes": "The page lists both the child's birth certificate and the child's Social Security card as required documents. However, the birth certificate also serves the authority category. Both are listed as separate line items in the 'all of the following' list, suggesting both are required together for child identity verification."
         }
       },
       "mailingAddress": {
@@ -148,7 +148,7 @@
           "PO Box 9554",
           "Allen, TX 75013"
         ],
-        "notes": "The page lists two addresses: standard mail (PO Box 9554) and overnight mail (701 Experian Parkway). The standard mail address is the primary mailing address. Note: this page covers checking if a minor has a credit report, not explicitly a security freeze — but the same address is used for all minor-related written requests per the page content."
+        "notes": "The page lists two addresses: standard mail (PO Box 9554) and overnight mail (701 Experian Parkway). The standard mail address is the primary mailing address. Note: this page covers checking if a minor has a credit report, not explicitly a security freeze — but the same address is used for all minor-related written requests."
       },
       "form": {
         "url": "https://www.experian.com/help/minor-request.html",
@@ -160,88 +160,40 @@
     {
       "bureau": "transunion",
       "sourceUrl": "https://www.transunion.com/credit-freeze/credit-freeze-faq",
-      "documents": [
-        {
-          "id": "birth_child",
-          "label": "Child's birth certificate"
-        },
-        {
-          "id": "court",
-          "label": "Court order or legal guardianship document"
-        },
-        {
-          "id": "foster",
-          "label": "Foster care placement document"
-        },
-        {
-          "id": "id_parent",
-          "label": "Parent's government-issued ID (e.g. driver's license, passport, state ID)"
-        },
-        {
-          "id": "poa",
-          "label": "Power of attorney"
-        },
-        {
-          "id": "ssn_child",
-          "label": "Child's Social Security card or number"
-        },
-        {
-          "id": "ssn_parent",
-          "label": "Parent's Social Security card or number"
-        },
-        {
-          "id": "utility",
-          "label": "Utility bill or proof of address (utility, bank, insurance statement)"
-        }
-      ],
+      "documents": [],
       "categories": {
         "authority": {
           "logic": "or",
-          "options": [
-            "birth_child",
-            "court",
-            "foster",
-            "poa"
-          ],
-          "notes": "Page content was blocked by Cloudflare and could not be read. Requirements are based on TransUnion's known standard protected consumer freeze documentation. Verify against live page."
+          "options": [],
+          "notes": "Page content unavailable — blocked by Cloudflare. Requirements could not be extracted."
         },
         "parentId": {
           "logic": "or",
-          "options": [
-            "id_parent",
-            "ssn_parent"
-          ],
-          "notes": "Page content was blocked by Cloudflare and could not be read. Requirements are based on TransUnion's known standard protected consumer freeze documentation. Verify against live page."
+          "options": [],
+          "notes": "Page content unavailable — blocked by Cloudflare. Requirements could not be extracted."
         },
         "address": {
           "logic": "or",
-          "options": [
-            "utility"
-          ],
-          "notes": "Page content was blocked by Cloudflare and could not be read. Requirements are based on TransUnion's known standard protected consumer freeze documentation. Verify against live page."
+          "options": [],
+          "notes": "Page content unavailable — blocked by Cloudflare. Requirements could not be extracted."
         },
         "childId": {
           "logic": "or",
-          "options": [
-            "birth_child",
-            "ssn_child"
-          ],
-          "notes": "Page content was blocked by Cloudflare and could not be read. Requirements are based on TransUnion's known standard protected consumer freeze documentation. Verify against live page."
+          "options": [],
+          "notes": "Page content unavailable — blocked by Cloudflare. Requirements could not be extracted."
         }
       },
       "mailingAddress": {
         "lines": [
-          "TransUnion Protected Consumer Freeze",
-          "<UNKNOWN>",
           "<UNKNOWN>"
         ],
-        "notes": "Both the main page and the address-source page were blocked by Cloudflare bot verification. No mailing address could be extracted. The address must be verified directly from https://www.transunion.com/credit-freeze/mail-or-phone before use."
+        "notes": "Both the main page and the address-source page were blocked by Cloudflare (Ray IDs: a0d51b94ff0711cd and a0d51b99e969a7ae). No mailing address could be extracted. The address-source page (https://www.transunion.com/credit-freeze/mail-or-phone) should be the authoritative source for the TransUnion Protected Consumer Freeze mailing address, but its content was inaccessible."
       },
       "form": {
         "url": "https://www.transunion.com/credit-freeze/credit-freeze-faq",
         "type": "letter",
         "resolves": true,
-        "contentHash": "dc3f1f1b9a92a672b4fd19f16ffde1932d11d08486ffa57b738260e70ba18eb7"
+        "contentHash": "27b56a14d5b132ca8c48939f57356c63b916c25205f9af28e3cd4d60395b27c9"
       }
     }
   ]
